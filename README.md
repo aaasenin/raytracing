@@ -7,4 +7,6 @@ cd raytracing\
 mkdir build
 cd build\
 cmake ..\
-make
+make\
+
+![alt text](https://github.com/aaasenin/raytracing/blob/master/out.png?raw=true)
