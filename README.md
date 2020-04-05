@@ -1,7 +1,7 @@
 # raytracing
-c++ computer graphics code example\
+c++ computer graphics code example
 
-git clone https://github.com/aaasenin/raytracing.git\
+git clone https://github.com/aaasenin/raytracing.git
 
 cd raytracing\
 mkdir build
