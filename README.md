@@ -4,9 +4,9 @@ c++ computer graphics code example
 git clone https://github.com/aaasenin/raytracing.git
 
 cd raytracing\
-mkdir build
+mkdir build\
 cd build\
 cmake ..\
-make\
+make
 
 ![alt text](https://github.com/aaasenin/raytracing/blob/master/out.png?raw=true)
