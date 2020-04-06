@@ -7,6 +7,8 @@ cd raytracing\
 mkdir build\
 cd build\
 cmake ..\
-make
+make\
+
+./rt −out <output_path> −scene <scene_number> −threads <threads>
 
 ![alt text](https://github.com/aaasenin/raytracing/blob/master/out.png?raw=true)
