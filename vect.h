@@ -17,9 +17,9 @@ class Vect3D {
     float x_, y_, z_;
     bool color_; // if vector meant to be color => 0 <= x_ <= 255
   public:
-	Vect3D(float x=0, float y=0, float z=0, bool color=false);
+    Vect3D(float x=0, float y=0, float z=0, bool color=false);
     
-	Vect3D(const Vect3D& other);
+    Vect3D(const Vect3D& other);
 	
     Vect3D& operator=(const Vect3D& other);
     
@@ -29,7 +29,7 @@ class Vect3D {
     
     Vect3D refract(const Vect3D& normal, float n_1, float n_2) const;
     
-	float norm() const { return sqrt(x_*x_ + y_*y_ + z_*z_); }
+    float norm() const { return sqrt(x_*x_ + y_*y_ + z_*z_); }
     
     float red() const { return x_; }
     
@@ -47,21 +47,21 @@ class Vect3D {
     
     const Vect3D& set_color(bool color);
     
-	Vect3D& normalize();
+    Vect3D& normalize();
 
-	float operator[](size_t i) const;
+    float operator[](size_t i) const;
 	
-	friend Vect3D operator+(const Vect3D& a, const Vect3D& b);
+    friend Vect3D operator+(const Vect3D& a, const Vect3D& b);
     
     friend Vect3D operator-(const Vect3D& a, const Vect3D& b);
 	
-	friend float operator*(const Vect3D& a, const Vect3D& b);
+    friend float operator*(const Vect3D& a, const Vect3D& b);
 	
-	friend Vect3D operator*(float a, const Vect3D& b);
+    friend Vect3D operator*(float a, const Vect3D& b);
 	
-	friend Vect3D operator*(const Vect3D& a, float b);
+    friend Vect3D operator*(const Vect3D& a, float b);
 	
-	friend std::ostream& operator<<(std::ostream& out, const Vect3D& v);
+    friend std::ostream& operator<<(std::ostream& out, const Vect3D& v);
 };
 Vect3D(float x=0, float y=0, float z=0, bool color=false) {
     x_ = x; y_ = y; z_ = z; color_ = color;
