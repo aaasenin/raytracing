@@ -122,39 +122,39 @@ const Vect3D& set_color(bool color) {
 }
 Vect3D& Vect3D::normalize() {
     assert(!(this->is_black()));
-	float norm_ = (*this).norm();
+    float norm_ = (*this).norm();
     norm_ = norm_ ? (1.f / norm_) : 0.f;
-	x_ = x_ * norm_; y_ = y_ * norm_; z_ = z_ * norm_;
-	return *this;
+    x_ = x_ * norm_; y_ = y_ * norm_; z_ = z_ * norm_;
+    return *this;
 }
 float Vect3D::operator[](size_t i) const {
-	assert(i < 3);
-	return i == 0 ? x_ : (i == 1 ? y_ : z_);
+    assert(i < 3);
+    return i == 0 ? x_ : (i == 1 ? y_ : z_);
 }
 Vect3D operator+(const Vect3D& a, const Vect3D& b) {
     if ((a.color_) || (b.color_))
-	    return Vect3D(color_sum(a.x_, b.x_), color_sum(a.y_, b.y_), color_sum(a.z_, b.z_), true);
+        return Vect3D(color_sum(a.x_, b.x_), color_sum(a.y_, b.y_), color_sum(a.z_, b.z_), true);
     else return Vect3D(a.x_ + b.x_, a.y_ + b.y_, a.z_ + b.z_);
 }
 Vect3D operator-(const Vect3D& a, const Vect3D& b) {
     if ((a.color_) || (b.color_))
-	    return Vect3D(color_sub(a.x_, b.x_), color_sub(a.y_, b.y_), color_sub(a.z_, b.z_), true);
+	return Vect3D(color_sub(a.x_, b.x_), color_sub(a.y_, b.y_), color_sub(a.z_, b.z_), true);
     else return Vect3D(a.x_ - b.x_, a.y_ - b.y_, a.z_ - b.z_);
 }
 float operator*(const Vect3D& a, const Vect3D& b) {
-	return a.x_ * b.x_ + a.y_ * b.y_ + a.z_ * b.z_;
+    return a.x_ * b.x_ + a.y_ * b.y_ + a.z_ * b.z_;
 }
 Vect3D operator*(float a, const Vect3D& b) {
     if (b.color_) 
         return Vect3D(color_mul(a, b.x_), color_mul(a, b.y_), color_mul(a, b.z_), true);
-	return Vect3D(a * b.x_, a * b.y_, a * b.z_);
+    return Vect3D(a * b.x_, a * b.y_, a * b.z_);
 }
 Vect3D operator*(const Vect3D& a, float b) {
     if (a.color_)
         return Vect3D(color_mul(a.x_, b), color_mul(a.y_, b), color_mul(a.z_, b), true);
-	return Vect3D(a.x_ * b, a.y_ * b, a.z_ * b);
+    return Vect3D(a.x_ * b, a.y_ * b, a.z_ * b);
 }
 std::ostream& operator<<(std::ostream& out, const Vect3D& v) {
-	out << '(' << v.x_ << ", " << v.y_  << ", " << v.z_ << ')';
-	return out;
+    out << '(' << v.x_ << ", " << v.y_  << ", " << v.z_ << ')';
+    return out;
 }
