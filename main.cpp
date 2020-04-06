@@ -356,7 +356,7 @@ Vect3D Scene::ray_throw(const Vect3D& point, const Vect3D& dirctn, size_t depth)
                 if (spheres_[j].ray_intersect(lights_[i].get_point(), light_to_hit, curr_dist) && curr_dist < light_to_hit_dist) {
                     if (spheres_[j].get_refract() != 1.f)
                         shadow = true; 
-					break;
+		    break;
                 }
             }
             if (shadow) {
