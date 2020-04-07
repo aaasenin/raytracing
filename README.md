@@ -7,7 +7,7 @@ cd raytracing\
 mkdir build\
 cd build\
 cmake ..\
-make\
+make
 
 ./rt −out <output_path> −scene <scene_number> −threads <threads>
 
