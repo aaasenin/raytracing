@@ -457,6 +457,7 @@ void renderCamera(const Scene& scene, const char* fileName="out.bmp", bool BMP=t
     assert(width % 2 == 0);
     assert(height % 2 == 0);
     assert(antialiasing_ppx == 1 || antialiasing_ppx == 2 || antialiasing_ppx == 4);
+    assert(BMP);
     
     camFOV = camFOV * (M_PI / 180.f);
     const float spaceHeight = 2.f * tan(camFOV / 2.f);
@@ -465,67 +466,37 @@ void renderCamera(const Scene& scene, const char* fileName="out.bmp", bool BMP=t
     const float x_tick = spaceWidth / width;
     const float y_tick = spaceHeight / height;
 
-    if (!BMP) {
-        std::vector<Vect3D> raveledImg (width * height);
+    unsigned char raveledImg[height][width][3];
 
-        size_t i, j;
-        omp_set_num_threads(num_threads);
-        #pragma omp parallel private(i, j)
-        #pragma omp for collapse(2) schedule(dynamic)
+    size_t i, j;
+    omp_set_num_threads(num_threads);
+    #pragma omp parallel private(i, j)
+    #pragma omp for collapse(2) schedule(dynamic)
+    for(i = 0; i < height; i++){
+        for(j = 0; j < width; j++){
 
-        for (i = 0; i < height; i++) {
-            for (j = 0; j < width; j++) {
+	    float x = j * x_tick + x_tick / 2.f - spaceWidth / 2.f;
+	    float y = -(-(i * y_tick) - y_tick / 2.f + spaceHeight / 2.f);
 
-                float x = j * x_tick + x_tick / 2.f - spaceWidth / 2.f;
-                float y = -(i * y_tick) - y_tick / 2.f + spaceHeight / 2.f;
+	    Vect3D pixel;
 
-                if (antialiasing_ppx == 1)
-                    raveledImg[i * width + j] = scene.ray_throw(camPos, camDirctn + Vect3D(x, y, 0.f), 0);
-                else if (antialiasing_ppx == 2)
-                    raveledImg[i * width + j] = (scene.ray_throw(camPos, camDirctn + Vect3D(x - x_tick / 4, y, 0.f), 0).set_color(false) + 
-                                                 scene.ray_throw(camPos, camDirctn + Vect3D(x + x_tick / 4, y, 0.f), 0).set_color(false)).set_color(true) * (0.5f);
-                else if (antialiasing_ppx == 4)
-                    raveledImg[i * width + j] = (scene.ray_throw(camPos, camDirctn + Vect3D(x - x_tick / 4, y - y_tick / 4, 0.f), 0).set_color(false) + 
-                                                 scene.ray_throw(camPos, camDirctn + Vect3D(x - x_tick / 4, y + y_tick / 4, 0.f), 0).set_color(false) +
-                                                 scene.ray_throw(camPos, camDirctn + Vect3D(x + x_tick / 4, y - y_tick / 4, 0.f), 0).set_color(false) + 
-                                                 scene.ray_throw(camPos, camDirctn + Vect3D(x + x_tick / 4, y + y_tick / 4, 0.f), 0).set_color(false)).set_color(true) * (0.25f);
-            }
+	    if (antialiasing_ppx == 1)
+	        pixel = scene.ray_throw(camPos, camDirctn + Vect3D(x, y, 0.f), 0);
+	    else if (antialiasing_ppx == 2)
+	        pixel = (scene.ray_throw(camPos, camDirctn + Vect3D(x - x_tick / 4, y, 0.f), 0).set_color(false) + 
+		         scene.ray_throw(camPos, camDirctn + Vect3D(x + x_tick / 4, y, 0.f), 0).set_color(false)).set_color(true) * (0.5f);
+	    else if (antialiasing_ppx == 4)
+	        pixel = (scene.ray_throw(camPos, camDirctn + Vect3D(x - x_tick / 4, y - y_tick / 4, 0.f), 0).set_color(false) + 
+		         scene.ray_throw(camPos, camDirctn + Vect3D(x - x_tick / 4, y + y_tick / 4, 0.f), 0).set_color(false) +
+		         scene.ray_throw(camPos, camDirctn + Vect3D(x + x_tick / 4, y - y_tick / 4, 0.f), 0).set_color(false) + 
+		         scene.ray_throw(camPos, camDirctn + Vect3D(x + x_tick / 4, y + y_tick / 4, 0.f), 0).set_color(false)).set_color(true) * (0.25f);
+
+	    raveledImg[i][j][2] = (unsigned char) pixel.red(); 
+	    raveledImg[i][j][1] = (unsigned char) pixel.green(); 
+	    raveledImg[i][j][0] = (unsigned char) pixel.blue(); 
         }
-        draw(fileName, raveledImg, width, height);
     }
-    if (BMP) {
-        unsigned char raveledImg[height][width][3];
-
-        size_t i, j;
-        omp_set_num_threads(num_threads);
-        #pragma omp parallel private(i, j)
-        #pragma omp for collapse(2) schedule(dynamic)
-        for(i = 0; i < height; i++){
-            for(j = 0; j < width; j++){
-                
-                float x = j * x_tick + x_tick / 2.f - spaceWidth / 2.f;
-                float y = -(-(i * y_tick) - y_tick / 2.f + spaceHeight / 2.f);
-                
-                Vect3D pixel;
-                
-                if (antialiasing_ppx == 1)
-                    pixel = scene.ray_throw(camPos, camDirctn + Vect3D(x, y, 0.f), 0);
-                else if (antialiasing_ppx == 2)
-                    pixel = (scene.ray_throw(camPos, camDirctn + Vect3D(x - x_tick / 4, y, 0.f), 0).set_color(false) + 
-                             scene.ray_throw(camPos, camDirctn + Vect3D(x + x_tick / 4, y, 0.f), 0).set_color(false)).set_color(true) * (0.5f);
-                else if (antialiasing_ppx == 4)
-                    pixel = (scene.ray_throw(camPos, camDirctn + Vect3D(x - x_tick / 4, y - y_tick / 4, 0.f), 0).set_color(false) + 
-                             scene.ray_throw(camPos, camDirctn + Vect3D(x - x_tick / 4, y + y_tick / 4, 0.f), 0).set_color(false) +
-                             scene.ray_throw(camPos, camDirctn + Vect3D(x + x_tick / 4, y - y_tick / 4, 0.f), 0).set_color(false) + 
-                             scene.ray_throw(camPos, camDirctn + Vect3D(x + x_tick / 4, y + y_tick / 4, 0.f), 0).set_color(false)).set_color(true) * (0.25f);
-                
-                raveledImg[i][j][2] = (unsigned char) pixel.red(); 
-                raveledImg[i][j][1] = (unsigned char) pixel.green(); 
-                raveledImg[i][j][0] = (unsigned char) pixel.blue(); 
-            }
-        }
-        drawBMP(fileName, (unsigned char *)raveledImg, width, height);
-    }
+    drawBMP(fileName, (unsigned char *)raveledImg, width, height);
 }
 
 int main(int argc, char** argv) {
